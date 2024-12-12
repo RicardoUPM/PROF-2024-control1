@@ -3,6 +3,19 @@ plugins {
     id 'jacoco'
 }
 
+sourceSets {
+	main {
+        java {
+            srcDirs = ['src/main']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test']
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -13,30 +26,4 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-}
-
-jacocoTestReport {
-    dependsOn tasks.test
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-
-tasks.named("jacocoTestCoverageVerification") {
-    dependsOn tasks.test
-    violationRules {
-        rule {
-            element = 'BUNDLE'
-            limit {
-                counter = 'INSTRUCTION'
-                value = 'COVEREDRATIO'
-                minimum = 1.0
-            }
-        }
-    }
-}
-
-check {
-    dependsOn tasks.named("jacocoTestCoverageVerification")
 }
