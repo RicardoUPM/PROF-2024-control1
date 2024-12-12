@@ -27,6 +27,39 @@ dependencies {
 }
 
 
+
 tasks.test {
     useJUnitPlatform()
+    finalizedBy tasks.jacocoTestReport
+}
+
+
+tasks.jacocoTestReport {
+    dependsOn tasks.test // Asegura que las pruebas se ejecuten antes del informe
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn tasks.jacocoTestReport
+    violationRules {
+        rule {
+            // Aplicar la regla de cobertura
+            element = 'METHOD'
+
+            // Configuración para cobertura de ramas
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 1.0 // Requiere 100% de cobertura
+            }
+        }
+    }
+}
+
+// Configurar el build para que falle si no se cumple el límite de cobertura
+tasks.build {
+    dependsOn tasks.jacocoTestCoverageVerification
 }
